@@ -1,0 +1,15 @@
+{
+  "name": "web-scraper",
+  "version": "1.0.0",
+  "description": "Scrape images and build supervised ML TF model",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "rajatonit",
+  "license": "MIT",
+  "dependencies": {
+    "image-pixels": "^2.2.2",
+    "images-scraper": "^3.0.1"
+  }
+}
