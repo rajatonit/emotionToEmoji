@@ -2,6 +2,7 @@ const Scraper = require ('images-scraper');
 var fetchEmotions = {};
 
 fetchEmotions.fetch = async (keyword, limit) => {
+    console.log("Fetching emotions")
   let google = new Scraper.Google ({
     keyword,
     limit,
@@ -16,6 +17,8 @@ fetchEmotions.fetch = async (keyword, limit) => {
   });
 
   const results = await google.start ();
+  console.log("Fetched Emotions")
+
   return results;
 };
 

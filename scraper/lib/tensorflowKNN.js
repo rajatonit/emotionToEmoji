@@ -31,12 +31,13 @@ tensorflowKNN.addEmotion = async (emotion, data) => {
             resolve()
           } catch (err) {
             reject(err)
-            console.log (err);
           }
         })
       );
     }
-    await Promise.all(promises)
+
+
+    return Promise.allSettled(promises)
   }) ();
 };
 
@@ -61,5 +62,18 @@ tensorflowKNN.save = async fileName => {
     });
   });
 };
+
+tensorflowKNN.loadModel =  (filename) => {
+
+    fs.readFile(`${__dirname}/../dist/${fileName}`, (err, dataset)=>{
+        let tensorObj = JSON.parse(dataset)
+        //covert back to tensor
+        Object.keys(tensorObj).forEach((key) => {
+          tensorObj[key] = tf.tensor(tensorObj[key], [tensorObj[key].length / 1000, 1000])
+        })
+        classifier.setClassifierDataset(tensorObj);
+
+    })
+ }
 
 export default tensorflowKNN;
