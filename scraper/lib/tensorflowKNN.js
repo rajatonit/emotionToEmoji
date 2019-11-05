@@ -11,47 +11,39 @@ const pixels = require ('image-pixels');
 tensorflowKNN.addEmotion = async (emotion, data) => {
   await (async () => {
     const mobilenet = await mobilenetModule.load ();
+    let promises = [];
     for await (const element of data) {
-      let {url} = element;
-      try {
-        var {data, width, height} = await pixels (url);
-        console.log ('data');
-        const myimg = await loadImage (url);
-        const canvas = createCanvas (200, 200);
-        const ctx = canvas.getContext ('2d');
-        ctx.drawImage (myimg, 50, 0, 70, 70);
+      promises.push (
+        new Promise (async (resolve, reject) => {
+          let {url} = element;
+          try {
+            var {width, height} = await pixels (url);
+            console.log ('data');
+            const myimg = await loadImage (url);
+            const canvas = createCanvas (width, height);
+            const ctx = canvas.getContext ('2d');
+            ctx.drawImage (myimg, 50, 0, width, height);
 
-        const img = await tf.browser.fromPixels (canvas);
+            const img = await tf.browser.fromPixels (canvas);
 
-        const logits = mobilenet.infer (img, 'conv_preds');
-        classifier.addExample (logits, emotion);
-      } catch (err) {
-        console.log (err);
-      }
+            const logits = mobilenet.infer (img, 'conv_preds');
+            classifier.addExample (logits, emotion);
+            resolve()
+          } catch (err) {
+            reject(err)
+            console.log (err);
+          }
+        })
+      );
     }
-    // data.forEach (async element => {
-    //   let {url} = element;
-    //   try {
-    //     var {data, width, height} = await pixels (url);
-    //     console.log('data')
-    //     const myimg = await loadImage (url);
-    //     const canvas = createCanvas (200, 200);
-    //     const ctx = canvas.getContext ('2d');
-    //     ctx.drawImage (myimg, 50, 0, 70, 70);
-
-    //     const img = await tf.browser.fromPixels (canvas);
-
-    //     const logits = mobilenet.infer (img, 'conv_preds');
-    //     classifier.addExample (logits, emotion);
-    //   } catch (err) {
-    //     console.log (err);
-    //   }
-    // });
+    await Promise.all(promises)
   }) ();
 };
 
 tensorflowKNN.save = async fileName => {
   var datasetObj = {};
+  console.log ('here');
+
   await new Promise (async (res, rej) => {
     console.log ('here');
     let dataset = classifier.getClassifierDataset ();
