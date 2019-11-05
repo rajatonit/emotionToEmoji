@@ -4,12 +4,25 @@
   "description": "Scrape images and build supervised ML TF model",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon --exec babel-node --ignore 'dist/*.json' index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "rajatonit",
   "license": "MIT",
   "dependencies": {
+    "@tensorflow-models/knn-classifier": "1.2.1",
+    "@tensorflow-models/mobilenet": "^2.0.2",
+    "@tensorflow/tfjs": "^1.2.1",
+    "@tensorflow/tfjs-node": "^1.2.11",
+    "axios": "^0.19.0",
+    "canvas": "^2.6.0",
     "image-pixels": "^2.2.2",
-    "images-scraper": "^3.0.1"
+    "images-scraper": "^3.0.1",
+    "ts-node": "^8.4.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.6.4",
+    "@babel/node": "^7.6.3",
+    "@babel/preset-env": "^7.6.3"
   }
 }
