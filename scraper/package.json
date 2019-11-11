@@ -4,7 +4,8 @@
   "description": "Scrape images and build supervised ML TF model",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --exec babel-node --ignore 'dist/*.json' index.js",
+    "scrape": "nodemon --exec babel-node --ignore 'dist/*.json' scrape.js",
+    "train": "nodemon --exec babel-node --ignore 'dist/*.json' train.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "rajatonit",

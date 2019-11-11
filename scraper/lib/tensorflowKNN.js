@@ -1,7 +1,6 @@
 import * as tf from '@tensorflow/tfjs';
 import * as mobilenetModule from '@tensorflow-models/mobilenet';
 import * as knnClassifier from '@tensorflow-models/knn-classifier';
-import {rejects} from 'assert';
 var classifier = knnClassifier.create ();
 const {createCanvas, loadImage} = require ('canvas');
 const tensorflowKNN = {};
@@ -18,7 +17,6 @@ tensorflowKNN.addEmotion = async (emotion, data) => {
           let {url} = element;
           try {
             var {width, height} = await pixels (url);
-            console.log ('data');
             const myimg = await loadImage (url);
             const canvas = createCanvas (width, height);
             const ctx = canvas.getContext ('2d');
@@ -43,10 +41,8 @@ tensorflowKNN.addEmotion = async (emotion, data) => {
 
 tensorflowKNN.save = async fileName => {
   var datasetObj = {};
-  console.log ('here');
 
   await new Promise (async (res, rej) => {
-    console.log ('here');
     let dataset = classifier.getClassifierDataset ();
     await Object.keys (dataset).forEach (async key => {
       let data = await dataset[key].dataSync ();
