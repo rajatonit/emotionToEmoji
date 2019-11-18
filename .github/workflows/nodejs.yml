@@ -30,6 +30,6 @@ jobs:
       uses: actions/upload-artifact@master
       with:
         name: final_emotions_model
-        path: dist/final_emotions_model.json
+        path: scraper/dist/final_emotions_model.json
       env:
         CI: true
