@@ -26,5 +26,10 @@ jobs:
         node scrape.js
         node train.js
         node test.js
+    - name: publish current model
+      uses: actions/upload-artifact@master
+        with:
+          name: final_emotions_model
+          path: dist/final_emotions_model.json
       env:
         CI: true
