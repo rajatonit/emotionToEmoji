@@ -20,7 +20,8 @@ jobs:
     - name: npm install, build, and test
       run: |
         npm install
-        cp node_modules/@tensorflow-models/knn-classifier/dist/knn-classifier.js node_modules/@tensorflow-models/knn-classifier/dist/index.js 
+        ls -lrta
+        cp ./node_modules/@tensorflow-models/knn-classifier/dist/knn-classifier.js ./node_modules/@tensorflow-models/knn-classifier/dist/index.js 
         node train.js
         node test.js
       env:
