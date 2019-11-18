@@ -1,4 +1,4 @@
-import fetchEmotions from './lib/fetchEmotions';
+const fetchEmotions = ('./lib/fetchEmotions');
 // import tensorflowKNN from './lib/tensorflowKNN';
 const emotionsToScrape =['happy person', 'sad person', 'laughing person', 'netural person']
 var finalEmotions = {}

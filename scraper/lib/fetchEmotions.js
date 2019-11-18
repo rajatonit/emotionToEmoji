@@ -45,4 +45,4 @@ fetchEmotions.read = async filename => {
   }
 };
 
-export default fetchEmotions;
+module.exports= fetchEmotions;

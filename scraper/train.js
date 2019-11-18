@@ -1,5 +1,5 @@
-import fetchEmotions from './lib/fetchEmotions';
-import tensorflowKNN from './lib/tensorflowKNN';
+const fetchEmotions = require('./lib/fetchEmotions');
+const tensorflowKNN = require('./lib/tensorflowKNN');
 const emotionsToScrape ={'happy person': 'happy', 'sad person': 'sad', 'laughing person': 'laugh', 'netural person': 'netural'}
 var finalEmotions = {}
 
@@ -9,7 +9,7 @@ let main = async () => {
     let emotionData =  await fetchEmotions.read('final');
     for await (const emotion of Object.keys(emotionData)){
         console.log('training '+ emotion)
-        await tensorflowKNN.addEmotion(emotionsToScrape[emotion], emotionData[emotion].slice(0,10))
+        await tensorflowKNN.addEmotion(emotionsToScrape[emotion], emotionData[emotion].slice(0,50))
     }
       await tensorflowKNN.save ('final_emotions.json');
 
