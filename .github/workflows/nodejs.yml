@@ -22,6 +22,7 @@ jobs:
         cd scraper
         npm install
         cp ./node_modules/@tensorflow-models/knn-classifier/dist/knn-classifier.js ./node_modules/@tensorflow-models/knn-classifier/dist/index.js 
+        node scrape.js
         node train.js
         node test.js
       env:
