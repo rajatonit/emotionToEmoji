@@ -19,8 +19,8 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: npm install, build, and test
       run: |
+        cd scraper
         npm install
-        ls -lrta
         cp ./node_modules/@tensorflow-models/knn-classifier/dist/knn-classifier.js ./node_modules/@tensorflow-models/knn-classifier/dist/index.js 
         node train.js
         node test.js
