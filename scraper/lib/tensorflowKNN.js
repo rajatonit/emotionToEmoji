@@ -6,6 +6,7 @@ const {createCanvas, loadImage} = require ('canvas');
 const tensorflowKNN = {};
 const fs = require ('fs');
 const pixels = require ('image-pixels');
+var guessedEmotions = []
 
 tensorflowKNN.addEmotion = async (emotion, data) => {
   await (async () => {
@@ -89,6 +90,8 @@ tensorflowKNN.returnEmotion = async (emotion, data) => {
   await (async () => {
     const mobilenet = await mobilenetModule.load ();
     let promises = [];
+    guessedEmotions = []
+
     for await (const element of data) {
       promises.push (
         new Promise (async (resolve, reject) => {
@@ -104,7 +107,8 @@ tensorflowKNN.returnEmotion = async (emotion, data) => {
 
             const logits = mobilenet.infer (img, 'conv_preds');
             const emotions = await classifier.predictClass (logits);
-            console.log ('here ' + JSON.stringify (emotions));
+            console.log ("Actual: "+ emotion + " Result: "+ JSON.stringify (emotions));
+            guessedEmotions.push(emotions)
             resolve (emotions);
           } catch (err) {
             console.log (err);
@@ -114,8 +118,14 @@ tensorflowKNN.returnEmotion = async (emotion, data) => {
       );
     }
 
-    return Promise.allSettled (promises);
+    return await Promise.allSettled (promises);
+
   }) ();
 };
+
+
+tensorflowKNN.returnGuessedEmotions = ()=>{
+  return guessedEmotions;
+}
 
 module.exports= tensorflowKNN;

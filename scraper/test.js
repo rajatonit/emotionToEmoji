@@ -6,22 +6,45 @@ const emotionsToScrape = {
   'laughing person': 'laugh',
   'netural person': 'netural',
 };
+const emotionCorrectness = {}
 
 let main = async () => {
   try {
-    await tensorflowKNN.loadModel ('final_emotions.json');
+    await tensorflowKNN.loadModel ('final_emotions_model.json');
 
     let emotionData = await fetchEmotions.read ('final');
     for await (const emotion of Object.keys (emotionData)) {
+      emotionCorrectness[emotion] = {
+        true: 0, // times right
+        false: 0 //times wrong
+      }
       console.log ('testing ' + emotion);
       const emotionsReturned = await tensorflowKNN.returnEmotion (
         emotionsToScrape[emotion],
-        emotionData[emotion].slice (0, 10)
+        emotionData[emotion].slice (0, 1)
       );
-      console.log (emotionsReturned);
+      for await (const guessEmotion of tensorflowKNN.returnGuessedEmotions()){
+        if(guessEmotion.label === emotionsToScrape[emotion]){
+          emotionCorrectness[emotion].true +=1
+        }else{
+          emotionCorrectness[emotion].false +=1
+        }
+      }
     }
 
-    console.log ('Fetched all emotions');
+    Object.keys(emotionCorrectness).forEach(emotion=>{
+      const currentEmotionResults = emotionCorrectness[emotion]
+      const currentEmotionResultsTotal = emotionCorrectness[emotion].true + emotionCorrectness[emotion].false
+      console.log("-------------------------------")
+      console.log(emotion + " Results: ")
+      console.log('Emotion was false ' + (currentEmotionResults.false / currentEmotionResultsTotal)* 100 + "%")
+      console.log('Emotion was true ' + (currentEmotionResults.true / currentEmotionResultsTotal)* 100 + "%")
+      console.log("-------------------------------")
+    })
+
+
+
+    console.log ('Tested all emotions');
     return;
   } catch (err) {
     console.log (err);

@@ -8,7 +8,7 @@ let main = async () => {
   try {
     for await (const emotion of emotionsToScrape){
       console.log(emotion)
-      const res = await fetchEmotions.fetch (emotion, 300);
+      const res = await fetchEmotions.fetch (emotion, 1);
       finalEmotions[emotion] = res
     }
     await fetchEmotions.save(finalEmotions,'final')
