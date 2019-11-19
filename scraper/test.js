@@ -21,7 +21,7 @@ let main = async () => {
       console.log ('testing ' + emotion);
       const emotionsReturned = await tensorflowKNN.returnEmotion (
         emotionsToScrape[emotion],
-        emotionData[emotion].slice (0, 1)
+        emotionData[emotion].slice (0, 20).join(emotionData[emotion].slice (100, 150))
       );
       for await (const guessEmotion of tensorflowKNN.returnGuessedEmotions()){
         if(guessEmotion.label === emotionsToScrape[emotion]){
