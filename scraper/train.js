@@ -9,7 +9,7 @@ let main = async () => {
     let emotionData =  await fetchEmotions.read('final');
     for await (const emotion of Object.keys(emotionData)){
         console.log('training '+ emotion)
-        await tensorflowKNN.addEmotion(emotionsToScrape[emotion], emotionData[emotion].slice(0,200))
+        await tensorflowKNN.addEmotion(emotionsToScrape[emotion], emotionData[emotion].slice(0,150))
     }
       await tensorflowKNN.save ('final_emotions_model.json');
 

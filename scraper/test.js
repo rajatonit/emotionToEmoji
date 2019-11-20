@@ -21,7 +21,7 @@ let main = async () => {
       console.log ('testing ' + emotion);
       const emotionsReturned = await tensorflowKNN.returnEmotion (
         emotionsToScrape[emotion],
-        emotionData[emotion].slice (0, 20).join(emotionData[emotion].slice (100, 150))
+        emotionData[emotion].slice (0, 20).concat(emotionData[emotion].slice (100, 150)).concat(emotionData[emotion].slice (150, 199))
       );
       for await (const guessEmotion of tensorflowKNN.returnGuessedEmotions()){
         if(guessEmotion.label === emotionsToScrape[emotion]){
@@ -31,14 +31,18 @@ let main = async () => {
         }
       }
     }
-
+    console.log(Object.keys(emotionCorrectness))
     Object.keys(emotionCorrectness).forEach(emotion=>{
       const currentEmotionResults = emotionCorrectness[emotion]
+      console.log(currentEmotionResults)
       const currentEmotionResultsTotal = emotionCorrectness[emotion].true + emotionCorrectness[emotion].false
+      const FPR = (currentEmotionResults.false / currentEmotionResultsTotal)* 100 
+      const PR = (currentEmotionResults.true / currentEmotionResultsTotal)* 100 
+
       console.log("-------------------------------")
-      console.log(emotion + " Results: ")
-      console.log('Emotion was false ' + (currentEmotionResults.false / currentEmotionResultsTotal)* 100 + "%")
-      console.log('Emotion was true ' + (currentEmotionResults.true / currentEmotionResultsTotal)* 100 + "%")
+      console.log(`${emotion} and it's results:`)
+      console.log(`The amount of times the emotion was false: ${FPR}%`)
+      console.log(`The amount of times the emotion was positive: ${PR}%`)
       console.log("-------------------------------")
     })
 
