@@ -2,9 +2,14 @@ const tensorflowKNN = require ('./lib/tensorflowKNN');
 const fetchEmotions = require ('./lib/fetchEmotions');
 const emotionsToScrape = {
   'happy person': 'happy',
-  'sad person': 'sad',
-  'laughing person': 'laugh',
-  'netural person': 'netural',
+  'silly person': 'silly',
+  'relaxed person': 'relaxed',
+  'suprised person': 'suprised',
+  'angry person': 'angry',
+  'sleepy person': 'sleepy',
+  'confused person' : 'confused',
+  'calm person' : 'calm',
+  'nervous person' : 'nervous',
 };
 const emotionCorrectness = {}
 

@@ -1,6 +1,6 @@
 const fetchEmotions = require('./lib/fetchEmotions');
 // import tensorflowKNN from './lib/tensorflowKNN';
-const emotionsToScrape =['happy person', 'sad person', 'laughing person', 'netural person']
+const emotionsToScrape =['happy person', 'sad person', 'silly person', 'relaxed person', 'suprised person', 'angry person', 'sleepy person', 'confused person', 'calm person', 'nervous person']
 var finalEmotions = {}
 
 
