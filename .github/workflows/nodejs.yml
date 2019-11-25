@@ -20,6 +20,7 @@ jobs:
     - name: npm install, build, and test
       run: |
         cd scraper
+        mkdir dist
         mkdir -p dist/json
         npm install
         cp ./node_modules/@tensorflow-models/knn-classifier/dist/knn-classifier.js ./node_modules/@tensorflow-models/knn-classifier/dist/index.js 

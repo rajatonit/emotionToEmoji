@@ -53,7 +53,7 @@ tensorflowKNN.save = async fileName => {
       });
       let jsonStr = JSON.stringify (datasetObj);
       fs.writeFile (
-        `${__dirname}/../dist/${fileName}`,
+        `./dist/${fileName}`,
         JSON.stringify (datasetObj),
         err => {
           if (err) rej (err);
@@ -70,7 +70,7 @@ tensorflowKNN.save = async fileName => {
 
 tensorflowKNN.loadModel = async fileName => {
   await new Promise ((res, rej) => {
-    fs.readFile (`${__dirname}/../dist/${fileName}`, async (err, dataset) => {
+    fs.readFile (`./dist/${fileName}`, async (err, dataset) => {
       if (err) rej (err);
       let tensorObj = JSON.parse (dataset);
       //covert back to tensor
