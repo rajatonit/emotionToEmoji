@@ -19,12 +19,12 @@ fetchEmotions.fetch = async (keyword, limit) => {
   });
   try {
     const results = await google.start ();
+    console.log ('Fetched Emotions');
+
+    return results;
   } catch (err) {
     throw err;
   }
-  console.log ('Fetched Emotions');
-
-  return results;
 };
 
 fetchEmotions.save = async (data, filename) => {
