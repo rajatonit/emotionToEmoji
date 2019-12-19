@@ -7,7 +7,7 @@ module.exports = class Logger {
     Logger.instance = this;
 
     this.log = require ('simple-node-logger').createSimpleLogger ();
-    this.setLevel (level);
+    this.log.setLevel (level);
 
     return this;
   }
