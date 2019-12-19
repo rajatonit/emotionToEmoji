@@ -26,13 +26,13 @@ jobs:
         cp ./node_modules/@tensorflow-models/knn-classifier/dist/knn-classifier.js ./node_modules/@tensorflow-models/knn-classifier/dist/index.js 
     - name: scrape
       run: |
-        node scrape.js
+        node ./scraper/scrape.js
     - name: train
       run: |
-        node train.js
+        node ./scraper/train.js
     - name: test
       run: |
-        node test.js
+        node ./scraper/test.js
     - name: publish current model
       uses: actions/upload-artifact@master
       with:
