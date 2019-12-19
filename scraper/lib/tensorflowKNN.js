@@ -51,7 +51,7 @@ tensorflowKNN.addEmotion = async (emotion, data, logger) => {
           } catch (err) {
             logger.error (
               'Error inserting ',
-              error,
+              err,
               ' ',
               new Date ().toJSON ()
             );
