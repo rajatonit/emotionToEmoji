@@ -1,5 +1,6 @@
 const fetchEmotions = require ('./lib/fetchEmotions');
 const tensorflowKNN = require ('./lib/tensorflowKNN');
+const Logger = require('./logger/logger')
 
 const emotionsToScrape = {
   'happy person': 'happy',
@@ -15,23 +16,27 @@ const emotionsToScrape = {
 var finalEmotions = {};
 
 let main = async () => {
+  const log = new Logger('info').getLog()
   try {
+    log.info('Starting training of data on: ', new Date().toJSON())
     let emotionData = await fetchEmotions.read ('final');
     for await (const emotion of Object.keys (emotionData)) {
-      console.log ('training ' + emotion);
+      log.getLog().info('Starting training of emotion',  emotion , ' on: ', new Date().toJSON())
       await tensorflowKNN.addEmotion (
         emotionsToScrape[emotion],
-        emotionData[emotion].slice (0, 150)
+        emotionData[emotion].slice (0, 150),
+        log
       );
+      log.info('Finished training of emotion',  emotion , ' on: ', new Date().toJSON())
     }
-    await tensorflowKNN.save ('final_emotions_model.json');
+    await tensorflowKNN.save ('final_emotions_model.json', log);
 
     // await fetchEmotions.save(finalEmotions,'final')
 
-    console.log ('Fetched all emotions');
+    log.info('Finished training of data on: ', new Date().toJSON())
     return;
   } catch (err) {
-    console.log (err);
+    log.error('Error on training of data ', err , ' ', new Date().toJSON())
     throw err;
   }
   // await tensorflowKNN.save ('test.json');

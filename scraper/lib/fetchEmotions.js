@@ -3,8 +3,8 @@ const fs = require ('fs').promises;
 
 var fetchEmotions = {};
 
-fetchEmotions.fetch = async (keyword, limit) => {
-  console.log (`Fetching emotions - ${keyword}`);
+fetchEmotions.fetch = async (keyword, limit, logger) => {
+  logger.info (`Fetching emotions - ${keyword} on`, new Date ().toJSON ());
   let google = new Scraper.Google ({
     keyword,
     limit,
@@ -19,10 +19,18 @@ fetchEmotions.fetch = async (keyword, limit) => {
   });
   try {
     const results = await google.start ();
-    console.log ('Fetched Emotions');
-
+    logger.info (
+      `Finished Fetching emotions - ${keyword} on`,
+      new Date ().toJSON ()
+    );
     return results;
   } catch (err) {
+    logger.error (
+      `Error Fetching emotions - ${keyword} `,
+      err,
+      ' ',
+      new Date ().toJSON ()
+    );
     throw err;
   }
 };

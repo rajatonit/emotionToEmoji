@@ -1,5 +1,7 @@
 const tensorflowKNN = require ('./lib/tensorflowKNN');
 const fetchEmotions = require ('./lib/fetchEmotions');
+const Logger = require ('./logger/logger');
+
 const emotionsToScrape = {
   'happy person': 'happy',
   'silly person': 'silly',
@@ -7,56 +9,90 @@ const emotionsToScrape = {
   'suprised person': 'suprised',
   'angry person': 'angry',
   'sleepy person': 'sleepy',
-  'confused person' : 'confused',
-  'calm person' : 'calm',
-  'nervous person' : 'nervous',
+  'confused person': 'confused',
+  'calm person': 'calm',
+  'nervous person': 'nervous',
 };
-const emotionCorrectness = {}
+const emotionCorrectness = {};
 
 let main = async () => {
   try {
-    await tensorflowKNN.loadModel ('final_emotions_model.json');
+    const log = new Logger ('info').getLog ();
+    logger.info ('Loading KNN model ', new Date ().toJSON ());
 
+    await tensorflowKNN.loadModel ('final_emotions_model.json', log);
+    logger.info ('Finished loading emotion model ', new Date ().toJSON ());
     let emotionData = await fetchEmotions.read ('final');
+
     for await (const emotion of Object.keys (emotionData)) {
       emotionCorrectness[emotion] = {
         true: 0, // times right
-        false: 0 //times wrong
-      }
-      console.log ('testing ' + emotion);
-      const emotionsReturned = await tensorflowKNN.returnEmotion (
-        emotionsToScrape[emotion],
-        emotionData[emotion].slice (0, 20).concat(emotionData[emotion].slice (100, 150)).concat(emotionData[emotion].slice (150, 199))
+        false: 0, //times wrong
+      };
+      logger.info (
+        'Testing emotion ',
+        emotion,
+        ' against model ',
+        new Date ().toJSON ()
       );
-      for await (const guessEmotion of tensorflowKNN.returnGuessedEmotions()){
-        if(guessEmotion.label === emotionsToScrape[emotion]){
-          emotionCorrectness[emotion].true +=1
-        }else{
-          emotionCorrectness[emotion].false +=1
+
+      await tensorflowKNN.returnEmotion (
+        emotionsToScrape[emotion],
+        emotionData[emotion]
+          .slice (0, 20)
+          .concat (emotionData[emotion].slice (100, 150))
+          .concat (emotionData[emotion].slice (150, 199)),
+        log
+      );
+      for await (const guessEmotion of tensorflowKNN.returnGuessedEmotions ()) {
+        if (guessEmotion.label === emotionsToScrape[emotion]) {
+          emotionCorrectness[emotion].true += 1;
+        } else {
+          emotionCorrectness[emotion].false += 1;
         }
       }
+      logger.info (
+        'Finished testing emotion ',
+        emotion,
+        ' against model ',
+        new Date ().toJSON ()
+      );
     }
-    console.log(Object.keys(emotionCorrectness))
-    Object.keys(emotionCorrectness).forEach(emotion=>{
-      const currentEmotionResults = emotionCorrectness[emotion]
-      console.log(currentEmotionResults)
-      const currentEmotionResultsTotal = emotionCorrectness[emotion].true + emotionCorrectness[emotion].false
-      const FPR = (currentEmotionResults.false / currentEmotionResultsTotal)* 100 
-      const PR = (currentEmotionResults.true / currentEmotionResultsTotal)* 100 
+    logger.debug (Object.keys (emotionCorrectness));
+    Object.keys (emotionCorrectness).forEach (emotion => {
+      const currentEmotionResults = emotionCorrectness[emotion];
+      logger.debug (
+        'Raw emotion results ',
+        currentEmotionResults,
+        ' ',
+        new Date ().toJSON ()
+      );
+      const currentEmotionResultsTotal =
+        emotionCorrectness[emotion].true + emotionCorrectness[emotion].false;
+      const FPR =
+        currentEmotionResults.false / currentEmotionResultsTotal * 100;
+      const PR = currentEmotionResults.true / currentEmotionResultsTotal * 100;
 
-      console.log("-------------------------------")
-      console.log(`${emotion} and it's results:`)
-      console.log(`The amount of times the emotion was false: ${FPR}%`)
-      console.log(`The amount of times the emotion was positive: ${PR}%`)
-      console.log("-------------------------------")
-    })
+      console.log ('-------------------------------');
+      logger.info (
+        `The amount of times the ${emotion} was false: ${FPR}% `,
+        new Date.toJSON ()
+      );
+      logger.info (
+        `The amount of times the ${emotion} was positive: ${PR}% `,
+        new Date.toJSON ()
+      );
+      console.log ('-------------------------------');
+    });
 
-
-
-    console.log ('Tested all emotions');
     return;
   } catch (err) {
-    console.log (err);
+    logger.error (
+      ' Error when testing all emotions ',
+      err,
+      ' ',
+      new Date.toJSON ()
+    );
     throw err;
   }
 };
