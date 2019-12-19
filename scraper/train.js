@@ -21,7 +21,7 @@ let main = async () => {
     log.info('Starting training of data on: ', new Date().toJSON())
     let emotionData = await fetchEmotions.read ('final');
     for await (const emotion of Object.keys (emotionData)) {
-      log.getLog().info('Starting training of emotion',  emotion , ' on: ', new Date().toJSON())
+      log.info('Starting training of emotion',  emotion , ' on: ', new Date().toJSON())
       await tensorflowKNN.addEmotion (
         emotionsToScrape[emotion],
         emotionData[emotion].slice (0, 150),
