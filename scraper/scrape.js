@@ -16,8 +16,9 @@ var finalEmotions = {};
 const Logger = require ('./logger/logger');
 
 let main = async () => {
+  const log = new Logger ('info').getLog ();
+
   try {
-    const log = new Logger ('info').getLog ();
 
     log.info ('Scraping Emotions on ', new Date ().toJSON ());
 
