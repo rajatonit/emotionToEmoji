@@ -24,8 +24,14 @@ jobs:
         mkdir -p dist/json
         npm install
         cp ./node_modules/@tensorflow-models/knn-classifier/dist/knn-classifier.js ./node_modules/@tensorflow-models/knn-classifier/dist/index.js 
+    - name: scrape
+      run: |
         node scrape.js
+    - name: train
+      run: |
         node train.js
+    - name: test
+      run: |
         node test.js
     - name: publish current model
       uses: actions/upload-artifact@master
