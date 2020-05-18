@@ -1,41 +1,53 @@
-const fetchEmotions = require ('./lib/fetchEmotions');
-// import tensorflowKNN from './lib/tensorflowKNN';
+const fetchEmotions = require ('./lib/scrapeEmotionImages');
+const fs = require('fs');
 const emotionsToScrape = [
-  'happy person',
-  'sad person',
-  'silly person',
-  'relaxed person',
-  'suprised person',
-  'angry person',
-  'sleepy person',
-  'confused person',
-  'calm person',
-  'nervous person',
+    "anger",
+    "contempt",
+    "disgust",
+    "fear",
+    "happiness",
+    "neutral",
+    "sadness",
+    "surprise"
 ];
 var finalEmotions = {};
-const Logger = require ('./logger/logger');
 
 let main = async () => {
-  const log = new Logger ('info').getLog ();
+    try {
 
-  try {
+        console.log ('Scraping Emotions on ', new Date ().toJSON ());
 
-    log.info ('Scraping Emotions on ', new Date ().toJSON ());
+        for await (const emotion of emotionsToScrape) {
+            const res = await fetchEmotions.fetch (emotion, 50);
+            finalEmotions[emotion] = res;
+        }
+        await fetchEmotions.save (finalEmotions, 'final');
 
-    for await (const emotion of emotionsToScrape) {
-      const res = await fetchEmotions.fetch (emotion, 200, log);
-      finalEmotions[emotion] = res;
+        console.log  ('Finished scraping Emotions on ', new Date ().toJSON ());
+
+        console.log('Downloading images locally onto machine ', new Date ().toJSON ())
+
+        const allEmotionImages = await  fetchEmotions.read('final')
+
+        for await (const currentEmotion of Object.keys(allEmotionImages)) {
+            let index = 0
+            if (!fs.existsSync(`./dist/${currentEmotion}/`)){
+                fs.mkdirSync(`./dist/${currentEmotion}/`);
+            }
+            let currentEmotionImages = allEmotionImages[currentEmotion];
+            for await (const currentSubEmotion of currentEmotionImages){
+                await  fetchEmotions.download(currentSubEmotion.url, currentEmotion, index);
+                index ++;
+            }
+        }
+
+
+        return;
+    } catch (err) {
+        console.error  ('Error scraping emotions ', err, ' ', new Date ().toJSON ());
+        // console.log(err)
+        throw err;
     }
-    await fetchEmotions.save (finalEmotions, 'final');
-
-    log.info ('Finished scraping Emotions on ', new Date ().toJSON ());
-    return;
-  } catch (err) {
-    log.error ('Error scraping emotions ', err, ' ', new Date ().toJSON ());
-    // console.log(err)
-    throw err;
-  }
-  // await tensorflowKNN.save ('test.json');
 };
 
 main ();
